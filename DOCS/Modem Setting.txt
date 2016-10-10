@@ -1,0 +1,3 @@
+Set Com Port (cek on device manager)
+Set Baudrate 1152000
+

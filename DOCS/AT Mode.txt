@@ -1,0 +1,70 @@
+1. Introduction 
+
+Some applications need low cost,long range and reliable wireless connectivity  rather than high data rate wireless links.The GSM network employed by  mobile phones is particularly suitable for such applications.Mobile phone or GSM modem may be utilized for such applications where you need to remotely operate a switch or relay in your applications like turning on or turning off a fan,heater, or electric motor remotely by sending SMS to a mobile phone or GSM  modem interfaced with a micro-controller or computer in your control applications.
+
+The interface between a GSM modem or a cell phone and a host controller (PC or microcontoller) is a textual protocol call Hayes AT Commands.The GSM Modem or Cell phone can be made to perform different operations like text messaging,deleting messages and dialing etc.,through AT commands issued by host controller. 
+There are two modes of operation for sending  and receiving SMS through a GSM modem or a mobile phone when interfaced with a microcontroller or a PC:
+
+1. Text Mode
+2. PDU (Protocol Description Unit) Mode 
+
+By default most modems and mobile phones support PDU mode for sending and receiving SMS.Text mode in which any information or message may be read as a plain text is not supported by all modems and mobile phones.However,some modems and mobile phones do support text mode as well as PDU mode for sending and receiving SMS.Text mode is actually encoding of bit stream represented by PDU mode.
+You can select between PDU mode and text mode using AT commands.The following AT command returns the current status of the mode of the GSM modem:
+
+AT+CMGF? <Enter>
+
+
+To set the text mode the following AT command is used:
+
+AT+CMGF = 1 <Enter>
+
+To set the PDU mode the following AT command is used:
+
+
+AT+CMGF = 0 <Enter>
+
+
+2. PDU Mode
+
+PDU mode offers support to send messages as either 8-bit per character or 7-bit per character.The SMS message is specified by the ETSI Organization (documents GSM 03.40 and GSM 03.38).According to these documents  the  maximum length of an SMS message could  be up to 160 characters,where each character according to GSM 03.38 is 7-bits in size.Mobile phones and GSM modems  usually do not treat eigit-bit messages (up to 140 characters) as text messages.Eight-bit messages are used for data like ring tones,images and Wap settings.Sixteen-bit messages (upto 70 characters) are viewable by most mobile phones .Sixteen-bit messages are used for Unicode (UCS32) text messages.
+You can apply encryption,encoding and data compression to messages in PDU mode.There are several encoding options available when reading a SMS message in PDU mode.The most commonly available options in this regard are : "GSM", "PCDN", "PCCP437", "IRA" and "8859-1".While reading an SMS message in computer application,any of these options may be selected by the At-command "AT+CSCS". If  the SMS message is read by the cell phone, the  phone itself will choose the appropriate encoding.A computer Application developed for reading incoming SMS messages can be configured to employ either text mode or PDU mode. Text  mode deprives the user of flexibility to choose from several available encoding options.In text mode there is a limited set of options for encoding available for the application to choose from.  In some applications,this is not acceptable,in such a case PDU mode is a good choice  where any encoding option can be implemented.
+There are three special data types that are supported  by PDU mode:
+
+      1. Octet: Group of 8-bits in hexa-decimal encoding (0x00 - 0xFF),
+           like D9.
+       2. Semi-Octet: Group of 8-bits in decimal encoding (0 - 153),like 12.
+       3. Septet : Group 7-bits in integer encoding (0 - 127) like 120.
+
+By default,7-bits are used by GSM alphabets to represent characters.The message "hello", when represented by 7-bits per character,comprises five characters called septets.For SMS transfer a septet string need to be encoded to octet stream for transfer through SMS.
+
+
+                Table 1 : Compression septet string into octet stream
+
+The first septet (h) is converted into an octet by adding the rightmost bit of the second septet (shown in bold).This bit from taken from second  septet is inserted at the left  of fist septet, this gives: 1 + 1101000 = 11101000 ("E8"). The second septet then  gets two bits (shown in bold) from the third septet, so the second character (e) become an octet: 00 + 110010 = 00110010 ("32"). The five first bits of the last char (o) is padded with zeros (shown in bold).
+Messages encoded this way can then be added as payload to “AT+CMGS” command as has been shown in one of my previous posts.
+The received message can be read from the memory location ,where it resides ,using the AT command :  “AT+CMGR”.This command will return an octet stream from the modem.For extracting useful information from the octet stream read from the modem memory a decompression method is required.An example decoding the octet  stream for  "hello" back to septets is shown in Table 2.
+
+
+                Table 2 : Decompressing octet stream into septets
+For getting septets back from octet stream,the leading 1 (shown in bold)  from first octet is removed and appended at the back of second septet,meanwhile two leading zeros from second septet are discarded.The fifth octet (06) loses its leading zero padding and  leading 1111 received from fourth octet is appended at its end. 
+For further details regarding PDU mode you can consult application note titled "Interfacing GSM Modems" available at the website of ATmel .
+
+3. Text Mode for SMS
+
+Text mode for sending SMS is simpler and easier to implement as compared with PDU mode.Unlike PDU mode,text mode is not supported by all mobile phones.In text mode you do not need to do bit level manipulations for sending SMS message.Though Text Mode is simpler and easier but it lacks the flexibility to be manipulated at bit level for adding features like  encryption and compression.
+
+
+The Text Mode of SMS for GSM Modem may be selected by issuing the following AT Command to the GSM modem :
+
+
+AT+CMGF = 1  <Enter>
+
+To send a text message "hello" to a mobile number (+923005123456) you need to issue the following AT Commands (after text mode of sms for GSM Modem has been chosen) through your host device to the GSM Modem interfaced with the host.
+
+
+1. AT+CMGS =+923005123456  <Enter>
+2. "hello" 
+3. ctrl+z
+
+
+Here <Enter> stands for carriage return,where the message string should be delivered to the GSM Modem with double quotes.After the message has been completely delivered to the GSM Modem the host device should issue the command "Ctrl+Z" to the GSM Modem so that modem may transmit the message to the mobile.

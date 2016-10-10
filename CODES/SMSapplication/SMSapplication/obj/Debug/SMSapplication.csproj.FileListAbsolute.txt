@@ -1,0 +1,8 @@
+C:\Users\alpha\Documents\GitHub\SMSapplication\SMSapplication\bin\Debug\SMSapplication.exe
+C:\Users\alpha\Documents\GitHub\SMSapplication\SMSapplication\bin\Debug\SMSapplication.pdb
+C:\Users\alpha\Documents\GitHub\SMSapplication\SMSapplication\obj\Debug\SMSapplication.csprojResolveAssemblyReference.cache
+C:\Users\alpha\Documents\GitHub\SMSapplication\SMSapplication\obj\Debug\SMSapplication.SMSapplication.resources
+C:\Users\alpha\Documents\GitHub\SMSapplication\SMSapplication\obj\Debug\SMSapplication.Properties.Resources.resources
+C:\Users\alpha\Documents\GitHub\SMSapplication\SMSapplication\obj\Debug\SMSapplication.csproj.GenerateResource.Cache
+C:\Users\alpha\Documents\GitHub\SMSapplication\SMSapplication\obj\Debug\SMSapplication.exe
+C:\Users\alpha\Documents\GitHub\SMSapplication\SMSapplication\obj\Debug\SMSapplication.pdb
